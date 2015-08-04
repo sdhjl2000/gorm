@@ -283,8 +283,12 @@ func (scope *Scope) QuotedTableName() (name string) {
 
 // CombinedConditionSql get combined condition sql
 func (scope *Scope) CombinedConditionSql() string {
-	return scope.joinsSql() + scope.whereSql() + scope.groupSql() +
+	sqlstr := scope.joinsSql() + scope.whereSql() + scope.groupSql() +
 		scope.havingSql() + scope.orderSql() + scope.limitSql() + scope.offsetSql()
+	if scope.Dialect().DriverName() == "mssql" && len(scope.Search.offset) > 0 {
+		sqlstr = scope.joinsSql() + scope.whereSql() + scope.groupSql() + scope.havingSql()
+	}
+	return sqlstr
 }
 
 func (scope *Scope) FieldByName(name string) (field *Field, ok bool) {

@@ -10,6 +10,9 @@ type mysql struct {
 	commonDialect
 }
 
+func (mysql) DriverName() string {
+	return "mysql"
+}
 func (mysql) SqlTag(value reflect.Value, size int, autoIncrease bool) string {
 	switch value.Kind() {
 	case reflect.Bool:

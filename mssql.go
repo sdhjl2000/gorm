@@ -11,6 +11,9 @@ type mssql struct {
 	commonDialect
 }
 
+func (mssql) DriverName() string {
+	return "mssql"
+}
 func (mssql) HasTop() bool {
 	return true
 }

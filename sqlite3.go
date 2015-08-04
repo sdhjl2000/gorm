@@ -10,6 +10,9 @@ type sqlite3 struct {
 	commonDialect
 }
 
+func (sqlite3) DriverName() string {
+	return "sqlite3"
+}
 func (sqlite3) SqlTag(value reflect.Value, size int, autoIncrease bool) string {
 	switch value.Kind() {
 	case reflect.Bool:

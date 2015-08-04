@@ -293,7 +293,16 @@ func (scope *Scope) prepareQuerySql() {
 	if scope.Search.raw {
 		scope.Raw(strings.TrimSuffix(strings.TrimPrefix(scope.CombinedConditionSql(), " WHERE ("), ")"))
 	} else {
-		scope.Raw(fmt.Sprintf("SELECT %v %v FROM %v %v", scope.topSql(), scope.selectSql(), scope.QuotedTableName(), scope.CombinedConditionSql()))
+		sqlstr := fmt.Sprintf("SELECT %v %v FROM %v %v", scope.topSql(), scope.selectSql(), scope.QuotedTableName(), scope.CombinedConditionSql())
+
+		if scope.Dialect().DriverName() == "mssql" && len(scope.Search.offset) > 0 {
+			offset, _ := strconv.Atoi(scope.Search.offset)
+			limit, _ := strconv.Atoi(scope.Search.limit)
+			sqlstr = fmt.Sprintf(`;WITH pages
+            AS (SELECT %v,ROW_NUMBER() OVER( %v) rowindex FROM %v %v)
+            SELECT * FROM pages WHERE rowindex BETWEEN %v AND %v ORDER BY rowindex`, scope.selectSql(), scope.orderSql(), scope.QuotedTableName(), scope.CombinedConditionSql(), offset, offset+limit)
+		}
+		scope.Raw(sqlstr)
 	}
 	return
 }

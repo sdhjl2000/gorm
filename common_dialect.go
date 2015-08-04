@@ -12,7 +12,9 @@ type commonDialect struct{}
 func (commonDialect) BinVar(i int) string {
 	return "$$" // ?
 }
-
+func (commonDialect) DriverName() string {
+	return ""
+}
 func (commonDialect) SupportLastInsertId() bool {
 	return true
 }

@@ -10,6 +10,9 @@ type foundation struct {
 	commonDialect
 }
 
+func (foundation) DriverName() string {
+	return "foundation"
+}
 func (foundation) BinVar(i int) string {
 	return fmt.Sprintf("$%v", i)
 }

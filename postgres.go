@@ -17,7 +17,9 @@ type postgres struct {
 func (postgres) BinVar(i int) string {
 	return fmt.Sprintf("$%v", i)
 }
-
+func (postgres) DriverName() string {
+	return "postgres"
+}
 func (postgres) SupportLastInsertId() bool {
 	return false
 }
